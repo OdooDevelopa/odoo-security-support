@@ -41,8 +41,9 @@ namespace Odoo_Security_Support.FileHandle
                 var Lines = File.ReadAllLines(file);
                 foreach (var line in Lines)
                 {
-                    var thisLineIsModel = line.Contains("_name") 
+                    var thisLineIsModel = line.Contains("    _name") 
                                         && !line.Contains("_rec_name")
+                                        && !line.Contains("#")
                                         && line.Contains("=")
                                         && (line.Contains("\"") || line.Contains("'"))
                                         && line.Contains(contain);

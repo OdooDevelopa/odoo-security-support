@@ -36,6 +36,8 @@ namespace Odoo_Security_Support
                 if (isModule)
                 {
                     txtPath.Text = folderBrowser.SelectedPath;
+                    dgvMain.Rows.Clear();
+                    dgvMain.Refresh();
                     var Models = Read.GetModelName(folderBrowser.SelectedPath);
                     var Groups = Read.GetGroupId(folderBrowser.SelectedPath);
                     foreach (var model in Models)
@@ -43,7 +45,7 @@ namespace Odoo_Security_Support
                         foreach (var groupId in Groups)
                         {
                             var _model = model.Replace(".", "_");
-                            var name = string.Format("{0}_{1}", _model, groupId);
+                            var name = string.Format("{0}_{1}", _model, groupId.Replace(".", "_"));
                             var id = string.Format("access_{0}", name);
                             var model_id = string.Format("model_{0}", _model);
                             dgvMain.Rows.Add(id, name, model_id, groupId, "1", "0", "0", "0");
