@@ -22,42 +22,17 @@ namespace Odoo_Security_Support
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-
+            return;
         }
 
         private void btnBrowser_Click(object sender, EventArgs e)
         {
             var folderBrowser = new FolderBrowserDialog();
             if (folderBrowser.ShowDialog() == DialogResult.OK)
-            {
-                bool isModule = !string.IsNullOrWhiteSpace(folderBrowser.SelectedPath)
-                                && Directory.EnumerateFiles(folderBrowser.SelectedPath)
-                                    .Any(file => file.Contains("__manifest__"));
-                if (isModule)
-                {
-                    txtPath.Text = folderBrowser.SelectedPath;
-                    dgvMain.Rows.Clear();
-                    dgvMain.Refresh();
-                    var Models = Read.GetModelName(folderBrowser.SelectedPath);
-                    var Groups = Read.GetGroupId(folderBrowser.SelectedPath);
-                    foreach (var model in Models)
-                    {
-                        foreach (var groupId in Groups)
-                        {
-                            var _model = model.Replace(".", "_");
-                            var name = string.Format("{0}_{1}", _model, groupId.Replace(".", "_"));
-                            var id = string.Format("access_{0}", name);
-                            var model_id = string.Format("model_{0}", _model);
-                            dgvMain.Rows.Add(id, name, model_id, groupId, "1", "0", "0", "0");
-                        }
-                        dgvMain.Rows.Add("", "", "", "", "", "", "", "", "", "");
-                    }
-                }
-                else
-                    MessageBox.Show("Invalid module folder!", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                txtPath.Text = folderBrowser.SelectedPath;
+             
         }
+
 
         private void btnExport_Click(object sender, EventArgs e)
         {
@@ -76,6 +51,49 @@ namespace Odoo_Security_Support
                 Rules.Add(line);
             }
             new frmExport(Rules).ShowDialog();
+        }
+
+        private void btnLoad_Click(object sender, EventArgs e)
+        {
+            var folderPath = txtPath.Text;
+            bool isModuleFolder = !string.IsNullOrWhiteSpace(folderPath)
+                && Directory.EnumerateFiles(folderPath).Any(file => file.Contains("__manifest__"));
+            if (isModuleFolder)
+            {
+                dgvMain.Rows.Clear();
+                dgvMain.Refresh();
+                var Models = Read.GetModelName(folderPath);
+                var Groups = Read.GetGroupId(folderPath);
+                var AvailableAccess = Read.GetAccess(folderPath);
+                var Access = FileHandle.Handle.GetAccess(Models, Groups, AvailableAccess);
+                foreach (var access in Access) dgvMain.Rows.Add(access);
+            }
+            else
+                MessageBox.Show(
+                    "Invalid module folder!", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void dgvMain_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+                e.Effect = DragDropEffects.All;
+        }
+
+        private void dgvMain_DragDrop(object sender, DragEventArgs e)
+        {
+            var dropedFiles = ((string[])e.Data.GetData(DataFormats.FileDrop));
+            txtPath.Text = dropedFiles[0];
+        }
+
+        private void txtPath_DragEnter(object sender, DragEventArgs e)
+        {
+            dgvMain_DragEnter(sender, e);
+        }
+
+        private void txtPath_DragDrop(object sender, DragEventArgs e)
+        {
+            dgvMain_DragDrop(sender, e);
         }
     }
 }

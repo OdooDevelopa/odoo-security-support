@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileHandle\Handle.cs" />
     <Compile Include="FileHandle\Read.cs" />
     <Compile Include="frmExport.cs">
       <SubType>Form</SubType>
