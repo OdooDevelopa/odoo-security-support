@@ -10,6 +10,7 @@ namespace Odoo_Security_Support
     {
         /// <summary>
         /// The main entry point for the application.
+        /// Add an comments
         /// </summary>
         [STAThread]
         static void Main()
