@@ -1,4 +1,4 @@
-# O2do2o Securi2ty Support
+# Odoo Security Support
 
 Choose your module folder which contain __manifest__, help you in granting permission on "ir.model.access.csv" file.
 
