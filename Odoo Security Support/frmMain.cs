@@ -58,6 +58,10 @@ namespace Odoo_Security_Support
             var folderPath = txtPath.Text;
             bool isModuleFolder = !string.IsNullOrWhiteSpace(folderPath)
                 && Directory.EnumerateFiles(folderPath).Any(file => file.Contains("__manifest__"));
+
+            // TODO: pass folder
+            isModuleFolder = true;
+
             if (isModuleFolder)
             {
                 dgvMain.Rows.Clear();
